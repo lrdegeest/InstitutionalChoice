@@ -1,0 +1,36 @@
+{
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l*{4}{c}}
+\toprule
+                    &\multicolumn{2}{c}{Observed}               &\multicolumn{2}{c}{Unobserved}             \\\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+                    &\multicolumn{1}{c}{(1)}         &\multicolumn{1}{c}{(2)}         &\multicolumn{1}{c}{(3)}         &\multicolumn{1}{c}{(4)}         \\
+\midrule
+Avg. Contribution   &       0.018         &       0.013         &       0.008         &       0.005         \\
+                    &      (0.04)         &      (0.04)         &      (0.02)         &      (0.01)         \\
+Neg. Dev            &       0.044\sym{***}&       0.039\sym{***}&       0.021\sym{***}&       0.018\sym{***}\\
+                    &      (0.01)         &      (0.01)         &      (0.00)         &      (0.00)         \\
+Pos. Dev            &      -0.003         &       0.003         &       0.005\sym{**} &       0.005         \\
+                    &      (0.01)         &      (0.01)         &      (0.00)         &      (0.00)         \\
+Neg. Dev x Self: Middle&                     &       0.001         &                     &       0.010\sym{*}  \\
+                    &                     &      (0.01)         &                     &      (0.01)         \\
+Neg. Dev x Self: High&                     &       0.016\sym{**} &                     &       0.004         \\
+                    &                     &      (0.01)         &                     &      (0.00)         \\
+Pos. Dev x Self: Middle&                     &      -0.001         &                     &      -0.003         \\
+                    &                     &      (0.01)         &                     &      (0.01)         \\
+Pos. Dev x Self: High&                     &      -0.013         &                     &       0.001         \\
+                    &                     &      (0.01)         &                     &      (0.01)         \\
+Gender              &      -0.173         &      -0.246         &       0.112         &       0.083         \\
+                    &      (0.26)         &      (0.21)         &      (0.17)         &      (0.18)         \\
+GPA                 &       0.237         &       0.305\sym{*}  &       0.212         &       0.224         \\
+                    &      (0.16)         &      (0.18)         &      (0.17)         &      (0.17)         \\
+\#EconClasses        &      -0.040         &      -0.053         &       0.022         &       0.019         \\
+                    &      (0.03)         &      (0.04)         &      (0.02)         &      (0.03)         \\                    
+Constant            &      -3.157\sym{***}&      -3.153\sym{***}&      -2.854\sym{***}&      -2.822\sym{***}\\
+                    &      (1.09)         &      (1.10)         &      (0.71)         &      (0.76)         \\
+\midrule
+Observations        &        1770         &        1770         &        1695         &        1695         \\
+\bottomrule
+\multicolumn{5}{l}{\footnotesize Standard errors clustered at the group level.}\\
+\multicolumn{5}{l}{\footnotesize \sym{*} \(p<0.10\), \sym{**} \(p<0.05\), \sym{***} \(p<0.01\)}\\
+\end{tabular}
+}

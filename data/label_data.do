@@ -1,9 +1,14 @@
+*===============================================================================
+* Do file to label datasets
+* authors: @lrdegeest and @davidckingsley
+*===============================================================================
+
 version 15
 
 *===============================================================================
 // 1. all treatments data
 *===============================================================================
-use /Users/LawrenceDeGeest/Desktop/notebook/research/heterogeous_endowments/data/all_treatments_s17, clear
+use /Users/LawrenceDeGeest/Desktop/notebook/research/InstitutionalChoice/data/all_treatments_s17, clear
 // generate self-type indicator
 gen self_type = 1 if low == 1
 replace self_type = 2 if middle == 1
@@ -19,7 +24,7 @@ save /Users/LawrenceDeGeest/Desktop/notebook/research/heterogeous_endowments/dat
 *===============================================================================
 // 2. punishment data
 *===============================================================================
-use /Users/LawrenceDeGeest/Desktop/notebook/research/heterogeous_endowments/data/data_punish_targets, clear
+use /Users/LawrenceDeGeest/Desktop/notebook/research/InstitutionalChoice/data/data_punish_targets, clear
 // 1. generate self-type indicator
 gen self_type = 1 if low == 1
 replace self_type = 2 if middle == 1
@@ -38,10 +43,11 @@ label values target_type self_type
 label define observe 0 "Unobserved" 1 "Observed"
 label values endow_observe observe
 // 5. trim and order
-keep sanctioncost treatment session period subject_id group_id self_type target_type target_endow contribute target_cont sanction target_sanction endowment profit endow_observe institution target_rank hetero target_sanctioncost
+keep sanctioncost treatment session period subject_id group_id self_type target_type target_endow contribute target_cont sanction target_sanction endowment profit endow_observe institution target_rank hetero target_sanctioncost gender gpa major economics age semesters
 order treatment session group_id subject_id period self_type target_type contribute target_cont sanction target_sanction
 sort group_id subject_id period
 egen mean_contribute = mean(contribute), by(group_id period)
 sort group_id subject_id period
+encode gender, gen(gender_id) // 1 = Female, 2 = Male
 // 6. save
-save /Users/LawrenceDeGeest/Desktop/notebook/research/heterogeous_endowments/data/data_punish_targets_labels, replace
+save /Users/LawrenceDeGeest/Desktop/notebook/research/InstitutionalChoice/data/data_punish_targets_labels, replace
