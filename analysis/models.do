@@ -6,28 +6,6 @@
 version 15
 
 *===============================================================================
-* TABLE 2
-*===============================================================================
-use all_treatments_s17_labels, clear
-preserve
-keep if endow_observe != 2 & period == 10
-qui eststo m_all: probit vote exo_earn_diff i.endow_observe, vce(cluster group_id)
-forvalues i = 1/3 {
-	qui eststo m_`i': probit vote exo_earn_diff i.endow_observe if self_type == `i', vce(cluster group_id)
-	//margins
-	//margins, dydx(endow_observe)
-}
-restore
-esttab m_all m_1 m_2 m_3 using voting_regs.tex, replace /// 
-	varlabels(exo_earn_diff "Earning Difference" 1.endow_observe Observed ) ///
-	drop(0.endow_observe) //
-	cells(b(star fmt(3)) se(par fmt(2))) star(* 0.10 ** 0.05 *** 0.01) ///
-	numbers nodepvars nomtitles booktabs ///
-	label legend  ///
-	collabels(none) ///
-	addnotes("Standard errors clustered at the group level.") 
-
-*===============================================================================
 * TABLE 3
 *===============================================================================
 use all_treatments_s17_labels, clear
@@ -97,78 +75,4 @@ esttab m_1 m_1_interact m_2 m_2_interact m_3 m_3_interact using sanctioncost_reg
 	mgroups("Low" "Middle" "High", pattern(1 0 1 0 1 0 ) prefix(\multicolumn{@span}{c}{) suffix(}) span erepeat(\cmidrule(lr){@span})) ///
 	label legend  ///
 	collabels(none) ///
-	addnotes("Standard errors clustered at the group level.") 
-
-	
-*===============================================================================
-* PUNISHMENT TARGETING
-*===============================================================================
-	
-*=======================================
-* SET UP
-use "/Users/LawrenceDeGeest/Desktop/notebook/research/InstitutionalChoice/data/data_punish_targets_labels.dta", clear
-* just PP+exogenous observations
-keep if institution == 1 & period < 10 & endow_observe != 2
-* proportion variables for sender and target
-gen self_prop= 100*(contribute/endowment)
-gen target_prop= 100*(target_cont/target_endow)
-* negative (absolute) and positive deviations
-gen neg_dev = abs(cond(target_prop < self_prop, target_prop - self_prop, 0))
-gen pos_dev = cond(target_prop > self_prop, target_prop - self_prop, 0)
-*=======================================
-
-*=======================================
-* REGRESSIONS
-xtset subject_id
-
-global controls mean_cont neg_dev pos_dev i.self_type gender_id gpa economics
-global interactions i.self_type#c.neg_dev i.self_type#c.pos_dev
-** 1. Observed
-qui eststo m1: xtprobit target_sanction $controls if endow_observe == 1, re vce(cluster group_id)
-qui eststo m12: xtprobit target_sanction $controls $interactions if endow_observe == 1, re vce(cluster group_id)
-** 2. Unobserved
-qui eststo m2: xtprobit target_sanction $controls if endow_observe == 0, re vce(cluster group_id)
-qui eststo m22: xtprobit target_sanction $controls $interactions if endow_observe == 0, re vce(cluster group_id)
-** table
-esttab m1 m12 m2 m22 using targeting.tex, replace /// 
-	varlabels(	mean_contribute "Avg. Contribution" neg_dev "Neg. Dev" pos_dev "Pos. Dev" ///
-				2.self_type#c.neg_dev "Neg. Dev x Sender: Middle" 2.self_type#c.pos_dev "Pos. Dev x Sender: Middle" ///
-				3.self_type#c.neg_dev "Neg. Dev x Sender: High" 3.self_type#c.pos_dev "Pos. Dev x Sender: High" ///
-				gender_id "Gender" gpa "GPA" economics "#EconClasses" _cons "Constant" ///
-				2.self_type "Sender: Middle" 3.self_type "Sender: High" ///
-			) /// 
-	cells(b(star fmt(3)) se(par fmt(2))) star(* 0.10 ** 0.05 *** 0.01) ///
-	numbers nodepvars nomtitles booktabs ///
-	mgroups("Observed" "Unobserved", pattern(1 0 1 0 ) prefix(\multicolumn{@span}{c}{) suffix(}) span erepeat(\cmidrule(lr){@span})) ///
-	label legend  ///
-	collabels(none) ///
-	drop(1.self_type 1.self_type#c.neg_dev 1.self_type#c.pos_dev) ///
-	addnotes("Standard errors clustered at the group level.") 
-
-
-*===============================================================================
-* Profit regression to complement Table 1
-*===============================================================================
-use all_treatments_s17_labels, clear
-preserve
-keep if period < 10 
-replace exo_period = period if institution == 0
-xtset subject_id
-levelsof institution, local(institutions)
-foreach i in `institutions' {
-	// all periods within an institution (exo_period = 1 2 3)
-	qui eststo m`i': xtreg profit ib2.endow_observe if institution == `i', re cluster(group_id)
-	// last periods within an institution (exo_period = 3)
-	qui eststo m`i'_last: reg profit ib2.endow_observe if institution == `i' & exo_period == 3, cluster(group_id)	
-}
-restore
-esttab m0 m1 m2 m0_last m1_last m2_last using profit_reviewer.tex, replace /// 
-	varlabels(0.endow_observe "Unobserved" 1.endow_observe "Observed" _cons "Constant") /// 
-	cells(b(star fmt(3)) se(par fmt(2))) star(* 0.10 ** 0.05 *** 0.01) ///
-	numbers nodepvars  booktabs ///
-	mtitles("VCM" "PP" "CA" "VCM" "PP" "CA") ///
-	mgroups("All Periods" "Last Period", pattern(1 0 0 1 0 0) prefix(\multicolumn{@span}{c}{) suffix(}) span erepeat(\cmidrule(lr){@span})) ///
-	label legend  ///
-	collabels(none) ///
-	drop(2.endow_observe) ///
 	addnotes("Standard errors clustered at the group level.") 
