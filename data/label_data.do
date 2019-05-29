@@ -5,10 +5,12 @@
 
 version 15
 
+cd /Users/LawrenceDeGeest/Desktop/notebook/research/InstitutionalChoice/data
+
 *===============================================================================
 // 1. all treatments data
 *===============================================================================
-use /Users/LawrenceDeGeest/Desktop/notebook/research/InstitutionalChoice/data/all_treatments_s17, clear
+use all_treatments_s17, clear
 // generate self-type indicator
 gen self_type = 1 if low == 1
 replace self_type = 2 if middle == 1
@@ -16,10 +18,12 @@ replace self_type = 3 if high == 1
 // labels
 label define self_type 1 "Low" 2 "Middle" 3 "High"
 label values self_type self_type
-label define observe 0 "Unobserved" 1 "Observed"
+label define observe 0 "Unobserved" 1 "Observed" 2 "Equal"
 label values endow_observe observe
+label define institution 0 "VCM" 1 "PP" 2 "CA"
+label values institution institution
 // save
-save /Users/LawrenceDeGeest/Desktop/notebook/research/heterogeous_endowments/data/all_treatments_s17_labels, replace
+save all_treatments_s17_labels, replace
 
 *===============================================================================
 // 2. punishment data
@@ -40,7 +44,7 @@ label define self_type 1 "Low" 2 "Middle" 3 "High"
 label values self_type self_type
 label define target_type 1 "Low" 2 "Middle" 3 "High"
 label values target_type self_type
-label define observe 0 "Unobserved" 1 "Observed"
+label define observe 0 "Unobserved" 1 "Observed" 2 "Equal"
 label values endow_observe observe
 // 5. trim and order
 keep sanctioncost treatment session period subject_id group_id self_type target_type target_endow contribute target_cont sanction target_sanction endowment profit endow_observe institution target_rank hetero target_sanctioncost gender gpa major economics age semesters
