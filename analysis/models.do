@@ -292,7 +292,7 @@ esttab m_profit_appendix m_sanction_appendix using profit_sanction_regs_appendix
 	
 *=======================================
 * SET UP
-use "/Users/LawrenceDeGeest/Desktop/notebook/research/InstitutionalChoice/data/data_punish_targets_labels.dta", clear
+use data_punish_targets_labels.dta, clear
 * just PP+exogenous observations
 preserve
 keep if institution == 1 & period < 10 & endow_observe != 2
